@@ -11,10 +11,11 @@ import {
   
   } from "@/components/ui/dialog"
   import { Textarea } from "@/components/ui/textarea"
-import connectToDatabase, { db, funct, sql } from "@/configs"
+import connectToDatabase, { db } from "@/configs"
 import run, { apiKey, chatSession } from "@/configs/AImodel"
 import { forms } from "@/configs/schema"
-import moment from "moment/moment"
+import moment from "moment"
+
 
   
 
@@ -32,7 +33,6 @@ import moment from "moment/moment"
     const oncreateform= async()=>{
         console.log(apiKey);
         setloading(true)
-        console.log((db));
         
         
         const result = await chatSession.sendMessage("Description:"+userinput+PROMPT);
@@ -41,12 +41,11 @@ import moment from "moment/moment"
   if(result.response.text()){
 try {
 
-    const resp=await db.insert(forms).values({
-        jsonform:'hiii',
-        createdAt:moment().format('DD/MM/yyyy')
-    }).returning({id:forms.id})
-
-    console.log("new form id:",resp[0].id);
+ const res=await db.insert(forms).values({
+  jsonform:result.response.text(),
+  createddate:moment().format('DD/MM/yyyy')
+ }).returning({id:forms.id})
+    console.log("new form id",res[0].id);
     
 } catch (error) {
     console.log(error);
